@@ -1,10 +1,11 @@
 const express = require('express');
-const { loginAdmin } = require('../controllers/admin');  // Admin controller
-const validateLogin = require('../middleware/authMiddleware');  // Middleware for validation
-
 const router = express.Router();
+const authController = require('../controllers/admin'); // Adjusted path based on the provided controller name
 
-// POST route for login
-router.post('/login', validateLogin, loginAdmin);
+// GET /login - Render login page
+router.get('/login', authController.getLogin);
+
+// POST /login - Handle login form submission
+router.post('/login', authController.postLogin);
 
 module.exports = router;
