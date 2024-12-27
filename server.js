@@ -50,7 +50,13 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'homepage.html'));
 });
 
-// Login route (GET)
+
+app.get('/settings', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'settings.html'));
+});
+
+// Serve the login.html file when visiting /login
+
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
@@ -103,3 +109,4 @@ const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
