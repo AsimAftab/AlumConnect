@@ -14,8 +14,9 @@ const app = express();
 app.use(session({
     secret: process.env.SESSION_SECRET || '12345',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized:true,
     cookie: {
+        httpOnly: true,
         secure: false,  // Set to true if using HTTPS
         maxAge: 3600000,  // Cookie expiration time (1 hour)
     },
@@ -67,11 +68,35 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
 });
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Failed to destroy session' });
+      }
+  
+      // Clear the session cookie
+      res.clearCookie('connect.sid', {
+        httpOnly: true,  // Make sure cookie is only accessible via HTTP requests
+        secure: false,   // Set to true in production when using HTTPS
+        path: '/'        // Make sure it matches the path where the cookie is set
+      });
+  
+      res.json({ message: 'Logged out successfully' });
+    });
+  });
+  
 
+// app.post('/logout', (req, res) => {
+//     res.json({ message: 'Logged out successfully' });
+//   });
+  
 // Route not found handler
-app.use((req, res, next) => {
-    res.status(404).json({ error: 'Route not found' });
-});
+// app.use((req, res, next) => {
+//     res.status(404).json({ error: 'Route not found' });
+// });
+
+  
+  
 
 // Start the server
 const port = process.env.PORT || 5000;
