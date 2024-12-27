@@ -4,8 +4,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
-const bcrypt = require('bcryptjs');
-const Admin = require('./models/admin'); // Assuming you have an Admin model
+const authController = require('./controllers/admin'); // Correctly import your login controller
 
 dotenv.config();
 
@@ -13,72 +12,55 @@ const app = express();
 
 // Session middleware setup
 app.use(session({
-    secret: process.env.SESSION_SECRET || '12345', // You can change this to any secret key
-    resave: false,  // Don't save session if unmodified
-    saveUninitialized: false,  // Don't create a session until something is stored
+    secret: process.env.SESSION_SECRET || '12345',
+    resave: false,
+    saveUninitialized: false,
     cookie: {
-        secure: false, // Set to true if you're using HTTPS (for production)
-        maxAge: 3600000, // 1 hour session duration
-    }
+        secure: false,  // Set to true if using HTTPS
+        maxAge: 3600000,  // Cookie expiration time (1 hour)
+    },
 }));
 
-// Middleware
+// Middleware for logging requests
 app.use(morgan('dev'));
+
+// Middleware to parse request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (HTML, CSS, JS, images) from the public folder
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
 connectDB();
 
+// Authentication middleware
+const isAuthenticated = (req, res, next) => {
+    if (req.session.adminId) {
+        return next();  // User is authenticated, proceed to the next middleware or route handler
+    } else {
+        // alert('You are not authenticated!');  // Alert the user that they are not authenticated
+        return res.redirect('/login');  // User is not authenticated, redirect to login
+    }
+};
+
 // Routes
-// Serve the homepage.html file when visiting /
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'homepage.html'));
 });
 
-// Serve the login.html file when visiting /login
+// Login route (GET)
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
-app.get('/dashboard', (req, res) => {
+
+// Dashboard route (GET) - Protected by authentication middleware
+app.get('/dashboard', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
 
-// Handle login POST request to check admin credentials
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        // Find admin by email in the database
-        const admin = await Admin.findOne({ email });
-
-        // If no admin is found
-        if (!admin) {
-            return res.status(404).json({ error: 'Admin not found' });
-        }
-
-        // Compare provided password with the stored password
-        const isMatch = await bcrypt.compare(password, admin.password);
-
-        if (isMatch) {
-            // Store admin information in the session
-            req.session.adminId = admin._id;
-            req.session.email = admin.email;
-
-            // Redirect or respond with success
-            return res.redirect('/dashboard'); // Redirect to homepage or other protected route
-        } else {
-            return res.status(401).json({ error: 'Invalid email or password' });
-        }
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Server error' });
-    }
-});
+// POST route for login
+app.post('/login', authController.postLogin);  // Use the login controller to handle login form submission
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -92,6 +74,7 @@ app.use((req, res, next) => {
 });
 
 // Start the server
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server running on http://localhost:${process.env.PORT || 5000}`);
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });
