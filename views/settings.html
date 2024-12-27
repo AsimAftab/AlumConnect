@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - AlumConnect</title>
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-alum">Alum</span>
+                <span class="logo-connect">Connect</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link">Dashboard</a>
+                <a href="#" class="nav-link active">Settings</a>
+                <a href="#" class="nav-link">Logout</a>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces" alt="Profile" class="profile-image">
+                    <div class="user-info">
+                        <span class="user-name">Rheya</span>
+                        <span class="user-role">Admin</span>
+                    </div>
+                    <button class="dropdown-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <h1 class="page-title">Settings</h1>
+            
+            <div class="sidebar-layout">
+                <aside class="sidebar">
+                    <nav class="sidebar-nav">
+                        <a href="#" class="sidebar-link active">Account Setting</a>
+                        <a href="#" class="sidebar-link">Add new Alumini</a>
+                    </nav>
+                </aside>
+
+                <section class="content">
+                    <h2 class="content-title">Account Settings</h2>
+                    
+                    <form class="settings-form">
+                        <div class="profile-upload">
+                            <p class="upload-label">Your Profile Picture</p>
+                            <div class="upload-container">
+                                <label for="fileUpload" class="upload-box">
+                                  <img src="images/upload.svg" alt="Upload Icon" class="upload-icon">
+                                  <p>Upload your photo</p>
+                                  <input type="file" id="fileUpload" accept="image/*" />
+                                </label>
+                              </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullname">Full name</label>
+                                <input type="text" id="fullname" placeholder="Please enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="Please enter your email">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">New Password</label>
+                                <input type="password" id="password" placeholder="Please enter your new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone number</label>
+                                <div class="phone-input">
+                                    <span class="country-code">+91</span>
+                                    <input type="tel" id="phone" placeholder="Please enter your phone number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                            <button type="button" class="btn btn-reset">Reset</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

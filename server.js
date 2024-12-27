@@ -39,6 +39,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'homepage.html'));
 });
 
+app.get('/settings', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'settings.html'));
+});
+
 // Serve the login.html file when visiting /login
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'login.html'));
@@ -95,3 +99,4 @@ app.use((err, req, res, next) => {
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server running on http://localhost:${process.env.PORT || 5000}`);
 });
+
