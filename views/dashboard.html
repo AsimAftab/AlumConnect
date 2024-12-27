@@ -1,11 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Alum Connect Dashboard</title>
+    <link rel="stylesheet" href="../public/css/dashboard_style.css">
+    <style>
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: linear-gradient(to right, #ffffff, #f8fafc);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+    </style>
 </head>
+
 <body>
-    
+    <header class="sticky-header">
+        <div class="logo-container">
+            <img src="../public/images/Logo.png" alt="Alum Connect Logo" class="logo">
+        </div>
+        <div class="nav-profile-container">
+            <nav>
+                <a href="#">Dashboard</a>
+                <a href="#">Settings</a>
+                <a href="#">Logout</a>
+            </nav>
+            <div class="profile">
+                <img src="../public/images/admin.png" alt="Admin" class="profile-pic">
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <div class="stats-container">
+            <div class="stat-card">
+                <h2>No of Alumni</h2>
+                <p>10</p>
+                <img src="../public/images/profile-pic.png" alt="Logo" class="stat-logo">
+            </div>
+            <div class="stat-card">
+                <h2>No of Higher<br>Studies</h2>
+                <p>15</p>
+                <img src="../public/images/profile-pic.png" alt="Logo" class="stat-logo">
+            </div>
+            <div class="stat-card">
+                <h2>No of Placed</h2>
+                <p>21</p>
+                <img src="../public/images/profile-pic.png" alt="Logo" class="stat-logo">
+            </div>
+            <div class="stat-card">
+                <h2>No of<br>Entrepreneur</h2>
+                <p>15</p>
+                <img src="../public/images/profile-pic.png" alt="Logo" class="stat-logo">
+            </div>
+        </div>
+
+        <!-- Search and Upload Row -->
+        <div class="search-upload-row">
+            <h2>Users Overview</h2>
+            <div class="search-upload">
+                <input type="text" placeholder="Search" id="search-input">
+                <button id="upload-csv">Upload CSV</button>
+            </div>
+        </div>
+
+        <!-- Table placeholder for dynamic database fetch -->
+        <div class="table-container">
+            <table id="user-table">
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Date Updated</th>
+                        <th>Batch</th>
+                        <th>Status</th>
+                        <th>Request Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be dynamically loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">Next</a>
+        </div>
+    </div>
 </body>
+
 </html>
