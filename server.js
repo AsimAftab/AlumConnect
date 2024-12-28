@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authController = require('./controllers/authController'); 
 const addAdminController = require('./controllers/addAdminController');
+const downloadReportController = require('./controllers/downloadReportController');
 dotenv.config();
 
 const app = express();
@@ -74,8 +75,9 @@ app.get('/settings',isAuthenticated, (req, res) => {
 
 // Login
 app.get('/login', authController.getLogin);
+app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
 
-
+app.get('/download-report',downloadReportController);
 
 // Dashboard (Protected by authentication middleware)
 app.get('/dashboard',isAuthenticated, (req, res) => {
@@ -111,7 +113,7 @@ app.get('/addNewAdmin', (req, res) => {
 app.post('/addNewAdmin', addAdminController.addNewAdmin);
 // app.post('/addNewAdmin',au {
 // POST route for login
-app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
+
 
 // Logout route
 app.post('/logout', (req, res) => {

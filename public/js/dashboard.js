@@ -41,3 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+function downloadReport(){
+    window.location.href='/download-report';
+}

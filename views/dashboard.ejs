@@ -36,26 +36,30 @@
     </header>
 
     <div class="dashboard-container">
+        <div class="download-report-container">
+            <button class="download-report-button" onclick="downloadReport()">Download Report</button>
+        </div>
+
         <div class="stats-container">
             <div class="stat-card">
                 <h2>No of Alumni</h2>
                 <p><%= alumniCount %></p> <!-- Dynamic value passed from the backend -->
-                <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
+                <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Higher<br>Studies</h2>
                 <p><%= higherStudiesCount %></p> <!-- Dynamic value passed from the backend -->
-                <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
+                <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Placed</h2>
                 <p><%= placedCount %></p>  <!-- Dynamic value passed from the backend -->
-                <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
+                <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of<br>Entrepreneur</h2>
                 <p><%= entrepreneurCount %></p> <!-- Dynamic value passed from the backend -->
-                <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
+                <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
         </div>
 
