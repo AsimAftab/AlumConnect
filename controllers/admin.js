@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');  // Use 'bcryptjs' for consistency (or 'bcry
 
 // Controller to handle GET requests for /login (e.g., render login page)
 exports.getLogin = (req, res) => {
-    res.render('login'); // Ensure 'login' is the name of your view/template
+    res.render('login',{title: 'AlumConnect | Sign In'}); // Ensure 'login' is the name of your view/template
 };
 
 // Controller to handle POST requests for /login (authentication)

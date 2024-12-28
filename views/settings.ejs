@@ -14,14 +14,15 @@
                 <span class="logo-connect">Connect</span>
             </div>
             <nav class="nav">
-                <a href="#" class="nav-link">Dashboard</a>
-                <a href="#" class="nav-link active">Settings</a>
-                <a href="#" class="nav-link">Logout</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+                <a href="/settings" class="nav-link <%= activePage === 'settings' ? 'active' : '' %>">Settings</a>
+                <!-- Add a new link for logout -->
+                <a href="/logout" id="logoutButton">Logout</a>
                 <div class="user-profile">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces" alt="Profile" class="profile-image">
+                    <img src="<%= user.profileImage %>" alt="Profile" class="profile-image">
                     <div class="user-info">
-                        <span class="user-name">Rheya</span>
-                        <span class="user-role">Admin</span>
+                        <span class="user-name"><%= user.name %></span>
+                        <span class="user-role"><%= user.role %></span>
                     </div>
                     <button class="dropdown-button">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -40,15 +41,16 @@
             <div class="sidebar-layout">
                 <aside class="sidebar">
                     <nav class="sidebar-nav">
-                        <a href="#" class="sidebar-link active">Account Setting</a>
+                        <a href="#" class="sidebar-link <%= activeSidebar === 'accountSetting' ? 'active' : '' %>">Account Setting</a>
                         <a href="#" class="sidebar-link">Add new Alumini</a>
+                        <a href="/addNewAdmin" class="sidebar-link">Add new Admin</a>
                     </nav>
                 </aside>
 
                 <section class="content">
                     <h2 class="content-title">Account Settings</h2>
                     
-                    <form class="settings-form">
+                    <form class="settings-form" method="POST" action="/updateProfile">
                         <div class="profile-upload">
                             <p class="upload-label">Your Profile Picture</p>
                             <div class="upload-container">
@@ -57,30 +59,30 @@
                                   <p>Upload your photo</p>
                                   <input type="file" id="fileUpload" accept="image/*" />
                                 </label>
-                              </div>
+                            </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="fullname">Full name</label>
-                                <input type="text" id="fullname" placeholder="Please enter your full name">
+                                <input type="text" id="fullname" name="fullname" value="<%= user.fullname %>" placeholder="Please enter your full name">
                             </div>
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" placeholder="Please enter your email">
+                                <input type="email" id="email" name="email" value="<%= user.email %>" placeholder="Please enter your email">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="password">New Password</label>
-                                <input type="password" id="password" placeholder="Please enter your new password">
+                                <input type="password" id="password" name="password" placeholder="Please enter your new password">
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone number</label>
                                 <div class="phone-input">
                                     <span class="country-code">+91</span>
-                                    <input type="tel" id="phone" placeholder="Please enter your phone number">
+                                    <input type="tel" id="phone" name="phone" value="<%= user.phone %>" placeholder="Please enter your phone number">
                                 </div>
                             </div>
                         </div>
