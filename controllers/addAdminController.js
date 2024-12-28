@@ -11,10 +11,6 @@ exports.addNewAdmin = async (req, res) => {
       return res.status(400).json({ error: 'Admin already exists' });
     }
 
-    // Hash the password before saving
-    // const salt = await bcrypt.genSalt(10);  // Generate salt
-    // const hashedPassword = await bcrypt.hash(password, salt);  // Hash the password
-    //console.log('Hashed password:', hashedPassword);
 
     // Create a new admin object with hashed password
     const newAdmin = new adminModels({

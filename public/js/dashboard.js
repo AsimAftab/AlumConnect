@@ -43,5 +43,5 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function downloadReport(){
-    window.location.href='/download-report';
+    window.location.href='/dashboard/report/download';
 }

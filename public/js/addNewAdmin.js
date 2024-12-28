@@ -13,7 +13,7 @@ document.getElementById('adminForm').addEventListener('submit', async function (
   
     try {
       // Send the form data to the server using the fetch API
-      const response = await fetch('/addNewAdmin', {
+      const response = await fetch('/settings/addNewAdmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // Indicate the content type as JSON
