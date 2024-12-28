@@ -4,7 +4,7 @@ const authController = require('../controllers/admin'); // Adjusted path based o
 
 const {addNewAdmin} = require('../controllers/addAdminController');
 
-router.post('addNewAdmin',addNewAdmin);
+router.post('addAdmin',addNewAdmin);
 // GET /login - Render login page
 router.get('/login', authController.getLogin);
 
