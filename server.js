@@ -4,9 +4,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
-const authController = require('./controllers/authController'); 
-const addAdminController = require('./controllers/addAdminController');
-const downloadReportController = require('./controllers/downloadReportController');
+const authRoutes = require('./routes/authRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');  
 dotenv.config();
 
 const app = express();
@@ -38,101 +38,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Connect to MongoDB
 connectDB();
 
-// Authentication middleware
-const isAuthenticated = (req, res, next) => {
-    if (req.session.adminId) {
-        return next(); // User is authenticated, proceed to the next middleware or route handler
-    } else {
-        return res.redirect('/login'); // User is not authenticated, redirect to login
-    }
-};
-
-// Routes
 
 // Homepage
 app.get('/', (req, res) => {
     res.render('homepage', { title: 'Welcome to Alum Connect' }); // Render the EJS file
 });
 
-// Settings
-app.get('/settings',isAuthenticated, (req, res) => {
-    // Assuming you have user data stored in session or database
-    const user = {
-        name: 'Rheya',
-        role: 'Admin',
-        profileImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces',
-        fullname: 'Rheya Kumar',
-        email: 'rheya@example.com',
-        phone: '9876543210'
-    };
-
-    res.render('settings', {
-        user: user,
-        activePage: 'settings',
-        activeSidebar: 'accountSetting'
-    });
-});
-
-// Login
-app.get('/login', authController.getLogin);
-app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
-
-app.get('/download-report',downloadReportController);
-
-// Dashboard (Protected by authentication middleware)
-app.get('/dashboard',isAuthenticated, (req, res) => {
-    // Fetch user data, e.g., from a database
-    const users = [
-      { name: 'John Doe', email: 'john.doe@example.com' },
-      { name: 'Jane Smith', email: 'jane.smith@example.com' },
-      // Add more users if needed
-    ];
-  
-    // Make sure to pass the 'users' array to the view
-    res.render('dashboard', {
-      users: users, // passing the users array to the EJS template
-      alumniCount: 10, // Example: Pass any other dynamic data
-      higherStudiesCount: 5,
-      placedCount: 8,
-      entrepreneurCount: 3
-    });
-  });
-  
-  
-// Add New Admin (Protected by authentication middleware)
-app.get('/addNewAdmin', (req, res) => {
-    // Optionally, pass any default values for admin (if any)
-    const admin = {
-        name: '',
-        email: ''
-    };
-    
-    res.render('addNewAdmin', { admin });
-});
-
-app.post('/addNewAdmin', addAdminController.addNewAdmin);
-// app.post('/addNewAdmin',au {
-// POST route for login
 
 
-// Logout route
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to destroy session' });
-        }
+app.use(authRoutes);
+app.use(dashboardRoutes);
+app.use(settingsRoutes);
 
-        // Clear the session cookie
-        res.clearCookie('connect.sid', {
-            httpOnly: true,
-            secure: false, // Set to true in production when using HTTPS
-            path: '/',
-        });
 
-        // Send a success response to indicate that the logout was successful
-        res.json({ message: 'Logged out successfully' });
-    });
-});
 
 
 // Error handling middleware

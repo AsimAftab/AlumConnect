@@ -1,19 +1,15 @@
 // middleware/authMiddleware.js
+
 module.exports = (req, res, next) => {
-    if (!req.session.adminId) {
-        return res.status(401).json({ error: 'Admin not authenticated' });
-    }
-    next(); // Continue to the next middleware/route handler
-};
-
-
-const ensureAuthenticated = (req, res, next) => {
     if (req.session.adminId) {
-        return next();
+        return next(); // User is authenticated, proceed to the next middleware or route handler
+    } else {
+        if (req.xhr || req.headers.accept.includes('application/json')) {
+            // If the request is an AJAX request or expects a JSON response
+            return res.status(401).json({ error: 'Admin not authenticated' });
+        } else {
+            // Otherwise, redirect to the login page
+            return res.redirect('/login');
+        }
     }
-    res.redirect('/login');
 };
-
-app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    res.render('dashboard'); // Replace 'dashboard' with your actual view/template
-});
