@@ -50,6 +50,10 @@ app.get('/login', (req, res) => {
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
+// app.get('/addAlumni', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'views', 'addAlumni.html'));
+//     // res.sendFile('addAlumni.html')
+// });
 
 // Handle login POST request to check admin credentials
 app.post('/login', async (req, res) => {
@@ -100,3 +104,4 @@ app.listen(process.env.PORT || 5000, () => {
     console.log(`Server running on http://localhost:${process.env.PORT || 5000}`);
 });
 
+ 
