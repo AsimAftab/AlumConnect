@@ -1,5 +1,5 @@
-const Admin = require('../models/admin'); // Adjust based on your structure
-const bcrypt = require('bcryptjs');  // Use 'bcryptjs' for consistency (or 'bcrypt' if you're using that)
+const Admin = require('../models/adminModels');
+const bcrypt = require('bcryptjs');  
 
 // Controller to handle GET requests for /login (e.g., render login page)
 exports.getLogin = (req, res) => {

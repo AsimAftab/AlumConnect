@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/admin'); // Adjusted path based on the provided controller name
 
+const {addNewAdmin} = require('../controllers/addAdminController');
+
+router.post('addNewAdmin',addNewAdmin);
 // GET /login - Render login page
 router.get('/login', authController.getLogin);
 
