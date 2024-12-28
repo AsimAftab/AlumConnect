@@ -396,3 +396,11 @@ nav a:hover::after {
     border-color: #15B5B0;
     box-shadow: 0 0 0 3px rgba(21, 181, 176, 0.1);
 }
+
+.no-data {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+    padding: 20px;
+    font-style: italic;
+}

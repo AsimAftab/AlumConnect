@@ -3,46 +3,59 @@ const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const multer = require('multer');
+const fs = require('fs');
+const xlsx = require('xlsx');
+const cors = require('cors');
 const connectDB = require('./config/db');
 const authController = require('./controllers/admin'); // Correctly import your login controller
+const recordRoutes = require('./routes/recordRoutes');
+const Records = require('./models/record');
 
 dotenv.config();
-
 const app = express();
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); // Set views directory
 
-// Session middleware setup
-app.use(session({
-    secret: process.env.SESSION_SECRET || '12345',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        secure: false, // Set to true if using HTTPS
-        maxAge: 3600000, // Cookie expiration time (1 hour)
-    },
-}));
-
-// Middleware for logging requests
+// Middleware setup
+app.use(cors());
 app.use(morgan('dev'));
-
-// Middleware to parse request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// View engine setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Session middleware setup
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || '12345',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            httpOnly: true,
+            secure: false, // Set to true if using HTTPS
+            maxAge: 3600000, // Cookie expiration time (1 hour)
+        },
+    })
+);
 
 // Connect to MongoDB
 connectDB();
 
+// Ensure the 'uploads' directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+    console.log('Uploads directory created.');
+}
+
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
     if (req.session.adminId) {
-        return next(); // User is authenticated, proceed to the next middleware or route handler
+        return next();
     } else {
-        return res.redirect('/login'); // User is not authenticated, redirect to login
+        return res.redirect('/login');
     }
 };
 
@@ -50,66 +63,83 @@ const isAuthenticated = (req, res, next) => {
 
 // Homepage
 app.get('/', (req, res) => {
-    res.render('homepage', { title: 'Welcome to Alum Connect' }); // Render the EJS file
+    res.render('homepage', { title: 'Welcome to Alum Connect' });
 });
 
 // Settings
-app.get('/settings',isAuthenticated, (req, res) => {
-    // Assuming you have user data stored in session or database
+app.get('/settings', isAuthenticated, (req, res) => {
     const user = {
         name: 'Rheya',
         role: 'Admin',
         profileImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces',
         fullname: 'Rheya Kumar',
         email: 'rheya@example.com',
-        phone: '9876543210'
+        phone: '9876543210',
     };
 
     res.render('settings', {
         user: user,
         activePage: 'settings',
-        activeSidebar: 'accountSetting'
+        activeSidebar: 'accountSetting',
     });
 });
 
 // Login
 app.get('/login', authController.getLogin);
 
-
-
 // Dashboard (Protected by authentication middleware)
-app.get('/dashboard',isAuthenticated, (req, res) => {
-    // Fetch user data, e.g., from a database
-    const users = [
-      { name: 'John Doe', email: 'john.doe@example.com' },
-      { name: 'Jane Smith', email: 'jane.smith@example.com' },
-      // Add more users if needed
-    ];
-  
-    // Make sure to pass the 'users' array to the view
-    res.render('dashboard', {
-      users: users, // passing the users array to the EJS template
-      alumniCount: 10, // Example: Pass any other dynamic data
-      higherStudiesCount: 5,
-      placedCount: 8,
-      entrepreneurCount: 3
-    });
-  });
-  
-  
-// Add New Admin (Protected by authentication middleware)
-app.get('/addNewAdmin', (req, res) => {
-    // Optionally, pass any default values for admin (if any)
+app.get('/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        // Fetch users from the database (example: MongoDB)
+        const users = await Records.find(); // Assuming 'Records' is your model for users
+
+        // Check if no users are found
+        const isNoData = users.length === 0;
+
+        // Calculate the counts dynamically based on the user data
+        const alumniCount = users.length;
+
+        // Calculate higherStudiesCount (assuming a field 'status' to identify this)
+        const higherStudiesCount = users.filter(user => user.status === 'Higher Studies').length;
+
+        // Calculate placedCount (assuming a field 'status' to identify this)
+        const placedCount = users.filter(user => user.status === 'Placed').length;
+
+        // Calculate entrepreneurCount (assuming a field 'status' to identify this)
+        const entrepreneurCount = users.filter(user => user.status === 'Entrepreneur').length;
+
+        // Render the dashboard with dynamic data
+        res.render('dashboard', {
+            users: users,  // Pass the user data from the database (empty or populated)
+            isNoData: isNoData, // Flag to indicate if there is no data
+            alumniCount: alumniCount,
+            higherStudiesCount: higherStudiesCount,
+            placedCount: placedCount,
+            entrepreneurCount: entrepreneurCount,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).render('error', { message: 'Something went wrong' });
+    }
+});
+
+
+
+// Add New Admin
+app.get('/addNewAdmin', isAuthenticated, (req, res) => {
     const admin = {
         name: '',
-        email: ''
+        email: '',
     };
-    
+
     res.render('addNewAdmin', { admin });
 });
 
+// Record routes
+app.use('/api', recordRoutes);
+
 // POST route for login
-app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
+app.post('/login', authController.postLogin);
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -117,26 +147,22 @@ app.post('/logout', (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to destroy session' });
         }
-
-        // Clear the session cookie
         res.clearCookie('connect.sid', {
             httpOnly: true,
-            secure: false, // Set to true in production when using HTTPS
+            secure: false,
             path: '/',
         });
-
-        // Send a success response to indicate that the logout was successful
         res.json({ message: 'Logged out successfully' });
     });
 });
+
 
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).render('error', { message: 'Something went wrong' });
-  });
-  
+});
 
 // Route not found handler
 app.use((req, res) => {
