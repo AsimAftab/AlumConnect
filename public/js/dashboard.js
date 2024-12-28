@@ -1,7 +1,9 @@
 // Wait for DOM content to be fully loaded before attaching the event listener
 document.addEventListener("DOMContentLoaded", function() {
     const logoutButton = document.getElementById('logoutButton');
+    const settingsLink = document.getElementById('settingsLink');
 
+    // Handle logout button click event
     if (logoutButton) {
         logoutButton.addEventListener('click', function(event) {
             event.preventDefault();  // Prevent the default anchor behavior
@@ -26,6 +28,16 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch((error) => {
                 console.error('Error logging out:', error);
             });
+        });
+    }
+
+    // Handle settings link click event
+    if (settingsLink) {
+        settingsLink.addEventListener('click', function(event) {
+            // Prevent default behavior to avoid triggering the logout
+            event.preventDefault();
+            // Manually navigate to the settings page
+            window.location.href = '/settings';
         });
     }
 });

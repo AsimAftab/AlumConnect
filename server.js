@@ -120,14 +120,16 @@ app.post('/logout', (req, res) => {
 
         // Clear the session cookie
         res.clearCookie('connect.sid', {
-            httpOnly: true, // Make sure cookie is only accessible via HTTP requests
+            httpOnly: true,
             secure: false, // Set to true in production when using HTTPS
-            path: '/', // Make sure it matches the path where the cookie is set
+            path: '/',
         });
 
-        res.redirect('/login'); // Redirect to login page after logout
+        // Send a success response to indicate that the logout was successful
+        res.json({ message: 'Logged out successfully' });
     });
 });
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
