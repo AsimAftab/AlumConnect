@@ -9,16 +9,18 @@ const authController = require('./controllers/admin'); // Correctly import your 
 dotenv.config();
 
 const app = express();
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views')); // Set views directory
 
 // Session middleware setup
 app.use(session({
     secret: process.env.SESSION_SECRET || '12345',
     resave: false,
-    saveUninitialized:true,
+    saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        secure: false,  // Set to true if using HTTPS
-        maxAge: 3600000,  // Cookie expiration time (1 hour)
+        secure: false, // Set to true if using HTTPS
+        maxAge: 3600000, // Cookie expiration time (1 hour)
     },
 }));
 
@@ -38,75 +40,109 @@ connectDB();
 // Authentication middleware
 const isAuthenticated = (req, res, next) => {
     if (req.session.adminId) {
-        return next();  // User is authenticated, proceed to the next middleware or route handler
+        return next(); // User is authenticated, proceed to the next middleware or route handler
     } else {
-        // alert('You are not authenticated!');  // Alert the user that they are not authenticated
-        return res.redirect('/login');  // User is not authenticated, redirect to login
+        return res.redirect('/login'); // User is not authenticated, redirect to login
     }
 };
 
 // Routes
+
+// Homepage
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'homepage.html'));
+    res.render('homepage', { title: 'Welcome to Alum Connect' }); // Render the EJS file
 });
 
+// Settings
+app.get('/settings',isAuthenticated, (req, res) => {
+    // Assuming you have user data stored in session or database
+    const user = {
+        name: 'Rheya',
+        role: 'Admin',
+        profileImage: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces',
+        fullname: 'Rheya Kumar',
+        email: 'rheya@example.com',
+        phone: '9876543210'
+    };
 
-app.get('/settings', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'settings.html'));
+    res.render('settings', {
+        user: user,
+        activePage: 'settings',
+        activeSidebar: 'accountSetting'
+    });
 });
 
-// Serve the login.html file when visiting /login
+// Login
+app.get('/login', authController.getLogin);
 
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'login.html'));
-});
 
-// Dashboard route (GET) - Protected by authentication middleware
-app.get('/dashboard', isAuthenticated, (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
+
+// Dashboard (Protected by authentication middleware)
+app.get('/dashboard',isAuthenticated, (req, res) => {
+    // Fetch user data, e.g., from a database
+    const users = [
+      { name: 'John Doe', email: 'john.doe@example.com' },
+      { name: 'Jane Smith', email: 'jane.smith@example.com' },
+      // Add more users if needed
+    ];
+  
+    // Make sure to pass the 'users' array to the view
+    res.render('dashboard', {
+      users: users, // passing the users array to the EJS template
+      alumniCount: 10, // Example: Pass any other dynamic data
+      higherStudiesCount: 5,
+      placedCount: 8,
+      entrepreneurCount: 3
+    });
+  });
+  
+  
+// Add New Admin (Protected by authentication middleware)
+app.get('/addNewAdmin', (req, res) => {
+    // Optionally, pass any default values for admin (if any)
+    const admin = {
+        name: '',
+        email: ''
+    };
+    
+    res.render('addNewAdmin', { admin });
 });
 
 // POST route for login
-app.post('/login', authController.postLogin);  // Use the login controller to handle login form submission
+app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
+
+// Logout route
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to destroy session' });
+        }
+
+        // Clear the session cookie
+        res.clearCookie('connect.sid', {
+            httpOnly: true, // Make sure cookie is only accessible via HTTP requests
+            secure: false, // Set to true in production when using HTTPS
+            path: '/', // Make sure it matches the path where the cookie is set
+        });
+
+        res.redirect('/login'); // Redirect to login page after logout
+    });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
-});
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Failed to destroy session' });
-      }
-  
-      // Clear the session cookie
-      res.clearCookie('connect.sid', {
-        httpOnly: true,  // Make sure cookie is only accessible via HTTP requests
-        secure: false,   // Set to true in production when using HTTPS
-        path: '/'        // Make sure it matches the path where the cookie is set
-      });
-  
-      res.json({ message: 'Logged out successfully' });
-    });
+    res.status(500).render('error', { message: 'Something went wrong' });
   });
   
 
-// app.post('/logout', (req, res) => {
-//     res.json({ message: 'Logged out successfully' });
-//   });
-  
 // Route not found handler
-// app.use((req, res, next) => {
-//     res.status(404).json({ error: 'Route not found' });
-// });
-
-  
-  
+app.use((req, res) => {
+    res.status(404).render('404');
+});
 
 // Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
-
