@@ -8,10 +8,8 @@ const fs = require('fs');
 const xlsx = require('xlsx');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const authController = require('./controllers/admin'); // Correctly import your login controller
-const recordRoutes = require('./routes/recordRoutes');
-const Records = require('./models/record');
-
+const authController = require('./controllers/authController'); 
+const addAdminController = require('./controllers/addAdminController');
 dotenv.config();
 const app = express();
 
@@ -135,9 +133,8 @@ app.get('/addNewAdmin', isAuthenticated, (req, res) => {
     res.render('addNewAdmin', { admin });
 });
 
-// Record routes
-app.use('/api', recordRoutes);
-
+app.post('/addNewAdmin', addAdminController.addNewAdmin);
+// app.post('/addNewAdmin',au {
 // POST route for login
 app.post('/login', authController.postLogin);
 
