@@ -4,8 +4,8 @@ const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
-const authController = require('./controllers/admin'); // Correctly import your login controller
-
+const authController = require('./controllers/authController'); 
+const addAdminController = require('./controllers/addAdminController');
 dotenv.config();
 
 const app = express();
@@ -108,6 +108,8 @@ app.get('/addNewAdmin', (req, res) => {
     res.render('addNewAdmin', { admin });
 });
 
+app.post('/addNewAdmin', addAdminController.addNewAdmin);
+// app.post('/addNewAdmin',au {
 // POST route for login
 app.post('/login', authController.postLogin); // Use the login controller to handle login form submission
 
