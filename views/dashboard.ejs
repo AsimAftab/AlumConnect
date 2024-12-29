@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alum Connect Dashboard</title>
-
     <link rel="stylesheet" href="/css/dashboard_style.css">
-
     <style>
         .sticky-header {
             position: sticky;
@@ -14,6 +13,26 @@
             z-index: 1000;
             background: linear-gradient(to right, #ffffff, #f8fafc);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .upload-success {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .upload-error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -43,6 +62,7 @@
         <div class="stats-container">
             <div class="stat-card">
                 <h2>No of Alumni</h2>
+
                 <p><%= alumniCount %></p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
@@ -60,19 +80,21 @@
                 <h2>No of<br>Entrepreneur</h2>
                 <p><%= entrepreneurCount %></p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
+
             </div>
         </div>
 
-        <!-- Search and Upload Row -->
         <div class="search-upload-row">
             <h2>Users Overview</h2>
             <div class="search-upload">
                 <input type="text" placeholder="Search" id="search-input">
-                <button id="upload-csv">Upload CSV</button>
+                <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file" accept=".xlsx, .xls" required>
+                    <button type="submit">Upload Excel</button>
+                </form>
             </div>
         </div>
 
-        <!-- Table placeholder for dynamic database fetch -->
         <div class="table-container">
             <table id="user-table">
                 <thead>
@@ -87,29 +109,67 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% users.forEach(function(user, index) { %>
-                        <tr>
-                            <td><%= index + 1 %></td>
-                            <td><%= user.name %></td>
-                            <td><%= user.company %></td>
-                            <td><%= user.dateUpdated %></td>
-                            <td><%= user.batch %></td>
-                            <td><%= user.status %></td>
-                            <td><a href="/update-request/<%= user.id %>">Request Update</a></td>
-                        </tr>
-                    <% }); %>
+                    <% if (users && users.length> 0) { %>
+                        <% users.forEach((user, index)=> { %>
+                            <tr>
+                                <td>
+                                    <%= index + 1 %>
+                                </td>
+                                <td>
+                                    <%= user.name || 'N/A' %>
+                                </td>
+                                <td>
+                                    <%= user.company || 'N/A' %>
+                                </td>
+                                <td>
+                                    <%= user.dateUpdated || 'N/A' %>
+                                </td>
+                                <td>
+                                    <%= user.batch || 'N/A' %>
+                                </td>
+                                <td>
+                                    <%= user.status || 'N/A' %>
+                                </td>
+                                <td><a href="/update-request/<%= user._id %>">Request Update</a></td>
+                            </tr>
+                            <% }); %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="7" class="no-data">No data available</td>
+                                    </tr>
+                                    <% } %>
                 </tbody>
             </table>
-        </div>
-
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">Next</a>
         </div>
     </div>
 
     <script src="/js/dashboard.js"></script>
+    <script>
+        // Handle file upload feedback
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Upload successful!');
+                    location.reload();
+                } else {
+                    alert(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                alert('Upload failed: ' + error.message);
+            }
+        });
+    </script>
 </body>
+
 </html>
