@@ -1,44 +1,15 @@
-// Authentication middleware
-const isAuthenticated = (req, res, next) => {
-    if (req.session && req.session.adminId) {
-        next();
+// middleware/authMiddleware.js
+
+module.exports = (req, res, next) => {
+    if (req.session.adminId) {
+        return next(); // User is authenticated, proceed to the next middleware or route handler
     } else {
-        if (req.xhr || req.headers.accept.includes('json')) {
-            res.status(401).json({ error: 'Unauthorized' });
+        if (req.xhr || req.headers.accept.includes('application/json')) {
+            // If the request is an AJAX request or expects a JSON response
+            return res.status(401).json({ error: 'Admin not authenticated' });
         } else {
-            res.redirect('/login');
+            // Otherwise, redirect to the login page
+            return res.redirect('/login');
         }
     }
-};
-
-// Role-based authorization middleware
-const authorize = (roles = []) => {
-    return (req, res, next) => {
-        if (!req.session.adminRole) {
-            return res.status(403).json({ error: 'Forbidden' });
-        }
-
-        if (roles.length && !roles.includes(req.session.adminRole)) {
-            return res.status(403).json({ error: 'Insufficient permissions' });
-        }
-
-        next();
-    };
-};
-
-// Error handling middleware
-const handleErrors = (err, req, res, next) => {
-    console.error(err.stack);
-
-    if (req.xhr || req.headers.accept.includes('json')) {
-        res.status(500).json({ error: 'Internal server error' });
-    } else {
-        res.status(500).render('error', { message: 'Something went wrong' });
-    }
-};
-
-module.exports = {
-    isAuthenticated,
-    authorize,
-    handleErrors
 };
