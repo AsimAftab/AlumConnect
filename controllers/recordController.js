@@ -1,52 +1,64 @@
-const fs = require('fs').promises;
+
 const recordService = require('../services/recordService');
 
 // Handle Excel file upload
+// controllers/recordController.js
 exports.uploadExcel = async (req, res) => {
     try {
         if (!req.file) {
+            console.error('No file uploaded');
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        // Process the uploaded Excel file
-        const records = await recordService.processExcelFile(req.file.path);
+        console.log('Uploaded file:', req.file.originalname);
 
-        // Save processed records to the database
-        await recordService.saveRecords(records);
+        // Process the file directly from the buffer
+        const records = await recordService.processExcelBuffer(req.file.buffer);
+        console.log('Processed records:', records);
 
-        // Delete the file after successful processing
-        await fs.unlink(req.file.path);
+        // Try saving records to the database
+        try {
+            await recordService.saveRecords(records);
+        } catch (error) {
+            if (error.code === 11000) {
+                // Duplicate key error
+                const duplicateKeyError = error.message.match(/dup key: { : (\d+) }/);
+                const duplicateSlNo = duplicateKeyError ? duplicateKeyError[1] : 'Unknown';
 
-        if (req.xhr || req.headers.accept.includes('json')) {
-            res.status(200).json({
-                success: true,
-                message: 'File uploaded and processed successfully'
+                console.error('Duplicate entry found for slNo:', duplicateSlNo);
+                return res.status(400).json({
+                    success: false,
+                    error: `Duplicate entry found for slNo: ${duplicateSlNo}`,
+                });
+            }
+
+            // Handle other types of errors (e.g., validation errors, etc.)
+            console.error('Error saving records:', error.message);
+            return res.status(500).json({
+                success: false,
+                error: 'Failed to save records',
+                details: error.message,
             });
-        } else {
-            res.redirect('/dashboard'); // Redirect to dashboard or another page after successful upload
         }
+
+        // Respond with success if everything went fine
+        res.status(200).json({
+            success: true,
+            message: 'File uploaded and processed successfully',
+        });
 
     } catch (error) {
-        console.error('Upload error:', error);
+        console.error('Error during file upload:', error.message);
 
-        // Attempt to delete the file if processing fails
-        if (req.file && req.file.path) {
-            await fs.unlink(req.file.path).catch((unlinkError) => {
-                console.error('Failed to delete file after error:', unlinkError);
-            });
-        }
-
-        if (req.xhr || req.headers.accept.includes('json')) {
-            res.status(500).json({
-                success: false,
-                error: 'Failed to process file',
-                details: error.message
-            });
-        } else {
-            res.status(500).render('error', { message: 'File upload failed', error: error });
-        }
+        res.status(500).json({
+            success: false,
+            error: 'Failed to process file',
+            details: error.message,
+        });
     }
 };
+
+
 
 // Render the dashboard page with statistics
 exports.getDashboard = async (req, res) => {
