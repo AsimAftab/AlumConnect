@@ -45,3 +45,27 @@ document.addEventListener("DOMContentLoaded", function() {
 function downloadReport(){
     window.location.href='/dashboard/report/download';
 }
+      // Handle file upload feedback
+      document.getElementById('upload-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Upload successful!');
+                location.reload();
+            } else {
+                alert(result.error || 'Upload failed');
+            }
+        } catch (error) {
+            alert('Upload failed: ' + error.message);
+        }
+    });      

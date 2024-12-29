@@ -1,5 +1,5 @@
 const xlsx = require('xlsx');
-const Record = require('../models/record');
+const Record = require('../models/recordModels');
 const moment = require('moment-timezone');
 
 class RecordService {

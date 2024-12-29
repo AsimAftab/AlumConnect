@@ -9,7 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const settingsRoutes = require('./routes/settingsRoutes');  
-const recordRoutes = require('./routes/recordRoutes');
+const recordRoutes=  require('./routes/recordRoutes');
 dotenv.config();
 
 const app = express();
