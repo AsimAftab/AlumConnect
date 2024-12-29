@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alum Connect Dashboard</title>
-
     <link rel="stylesheet" href="/css/dashboard_style.css">
-
     <style>
         .sticky-header {
             position: sticky;
@@ -23,6 +21,18 @@
             font-size: 16px;
             padding: 20px;
             font-style: italic;
+        }
+
+        .upload-success {
+            color: green;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .upload-error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -49,46 +59,44 @@
             <div class="stat-card">
                 <h2>No of Alumni</h2>
                 <p>
-                    <%= alumniCount %>
-                </p> <!-- Dynamic value passed from the backend -->
+                    <%= alumniCount || 0 %>
+                </p>
                 <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Higher<br>Studies</h2>
                 <p>
-                    <%= higherStudiesCount %>
-                </p> <!-- Dynamic value passed from the backend -->
+                    <%= higherStudiesCount || 0 %>
+                </p>
                 <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Placed</h2>
                 <p>
-                    <%= placedCount %>
-                </p> <!-- Dynamic value passed from the backend -->
+                    <%= placedCount || 0 %>
+                </p>
                 <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
-                <h2>No of<br>Entrepreneur</h2>
+                <h2>No of<br>Entrepreneurs</h2>
                 <p>
-                    <%= entrepreneurCount %>
-                </p> <!-- Dynamic value passed from the backend -->
+                    <%= entrepreneurCount || 0 %>
+                </p>
                 <img src="/images/profile-pic.png" alt="Logo" class="stat-logo">
             </div>
         </div>
 
-        <!-- Search and Upload Row -->
         <div class="search-upload-row">
             <h2>Users Overview</h2>
             <div class="search-upload">
                 <input type="text" placeholder="Search" id="search-input">
                 <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="file" accept=".csv, .xlsx" required>
-                    <button type="submit" id="upload-csv">Upload Excel</button>
+                    <input type="file" name="file" accept=".xlsx, .xls" required>
+                    <button type="submit">Upload Excel</button>
                 </form>
             </div>
         </div>
 
-        <!-- Table placeholder for dynamic database fetch -->
         <div class="table-container">
             <table id="user-table">
                 <thead>
@@ -104,27 +112,27 @@
                 </thead>
                 <tbody>
                     <% if (users && users.length> 0) { %>
-                        <% users.forEach(function(user, index) { %>
+                        <% users.forEach((user, index)=> { %>
                             <tr>
                                 <td>
                                     <%= index + 1 %>
                                 </td>
                                 <td>
-                                    <%= user.name %>
+                                    <%= user.name || 'N/A' %>
                                 </td>
                                 <td>
-                                    <%= user.company %>
+                                    <%= user.company || 'N/A' %>
                                 </td>
                                 <td>
-                                    <%= user.dateUpdated %>
+                                    <%= user.dateUpdated || 'N/A' %>
                                 </td>
                                 <td>
-                                    <%= user.batch %>
+                                    <%= user.batch || 'N/A' %>
                                 </td>
                                 <td>
-                                    <%= user.status %>
+                                    <%= user.status || 'N/A' %>
                                 </td>
-                                <td><a href="/update-request/<%= user.id %>">Request Update</a></td>
+                                <td><a href="/update-request/<%= user._id %>">Request Update</a></td>
                             </tr>
                             <% }); %>
                                 <% } else { %>
@@ -135,52 +143,34 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="pagination">
-            <a href="#" class="active">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">Next</a>
-        </div>
     </div>
 
     <script src="/js/dashboard.js"></script>
-
-
     <script>
-        // Handle file selection and upload
-        document.getElementById('uploadButton').addEventListener('click', () => {
-            const fileInput = document.getElementById('fileInput');
-            const selectedFile = fileInput.files[0];
+        // Handle file upload feedback
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-            if (!selectedFile) {
-                alert('Please select a file to upload.');
-                return;
-            }
+            const formData = new FormData(event.target);
 
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-
-
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        console.error('Upload Error:', data.error);
-                        alert(`Error: ${data.error}`);
-                    } else {
-                        alert('File uploaded successfully!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to upload the file.');
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
                 });
-        });
 
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Upload successful!');
+                    location.reload();
+                } else {
+                    alert(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                alert('Upload failed: ' + error.message);
+            }
+        });
     </script>
 </body>
 

@@ -3,13 +3,12 @@ const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-const multer = require('multer');
 const fs = require('fs');
-const xlsx = require('xlsx');
 const cors = require('cors');
 const connectDB = require('./config/db');
-const authController = require('./controllers/authController'); 
-const addAdminController = require('./controllers/addAdminController');
+const authController = require('./controllers/authController');
+const recordRoutes = require('./routes/recordRoutes');
+
 dotenv.config();
 const app = express();
 
@@ -85,44 +84,6 @@ app.get('/settings', isAuthenticated, (req, res) => {
 // Login
 app.get('/login', authController.getLogin);
 
-// Dashboard (Protected by authentication middleware)
-app.get('/dashboard', isAuthenticated, async (req, res) => {
-    try {
-        // Fetch users from the database (example: MongoDB)
-        const users = await Records.find(); // Assuming 'Records' is your model for users
-
-        // Check if no users are found
-        const isNoData = users.length === 0;
-
-        // Calculate the counts dynamically based on the user data
-        const alumniCount = users.length;
-
-        // Calculate higherStudiesCount (assuming a field 'status' to identify this)
-        const higherStudiesCount = users.filter(user => user.status === 'Higher Studies').length;
-
-        // Calculate placedCount (assuming a field 'status' to identify this)
-        const placedCount = users.filter(user => user.status === 'Placed').length;
-
-        // Calculate entrepreneurCount (assuming a field 'status' to identify this)
-        const entrepreneurCount = users.filter(user => user.status === 'Entrepreneur').length;
-
-        // Render the dashboard with dynamic data
-        res.render('dashboard', {
-            users: users,  // Pass the user data from the database (empty or populated)
-            isNoData: isNoData, // Flag to indicate if there is no data
-            alumniCount: alumniCount,
-            higherStudiesCount: higherStudiesCount,
-            placedCount: placedCount,
-            entrepreneurCount: entrepreneurCount,
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).render('error', { message: 'Something went wrong' });
-    }
-});
-
-
-
 // Add New Admin
 app.get('/addNewAdmin', isAuthenticated, (req, res) => {
     const admin = {
@@ -133,8 +94,9 @@ app.get('/addNewAdmin', isAuthenticated, (req, res) => {
     res.render('addNewAdmin', { admin });
 });
 
-app.post('/addNewAdmin', addAdminController.addNewAdmin);
-// app.post('/addNewAdmin',au {
+// Main routes for dashboard and upload
+app.use('/', recordRoutes);
+
 // POST route for login
 app.post('/login', authController.postLogin);
 
@@ -152,8 +114,6 @@ app.post('/logout', (req, res) => {
         res.json({ message: 'Logged out successfully' });
     });
 });
-
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,22 +1,16 @@
-// routes/recordRoutes.js
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const recordController = require('../controllers/recordController');
-
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './uploads/'),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
-
-const upload = multer({ storage });
 const router = express.Router();
+const recordController = require('../controllers/recordController');
+const { upload } = require('../middleware/uploadMiddleware');
+const { isAuthenticated } = require('../middleware/authMiddleware');
 
-// Upload Excel and save to DB
-router.post('/upload', upload.single('file'), recordController.uploadExcel);
+// Upload route with proper middleware chain
+router.post('/upload', isAuthenticated, upload.single('file'), recordController.uploadExcel);
 
-// Fetch records for rendering
-router.get('/records', recordController.getRecords);
+// Dashboard route
+router.get('/dashboard', isAuthenticated, recordController.getDashboard);
+
+// Records API route
+router.get('/records', isAuthenticated, recordController.getRecords);
 
 module.exports = router;
