@@ -16,7 +16,7 @@
             <nav class="nav">
                 <a href="/dashboard" class="nav-link">Dashboard</a>
                 <a href="/settings" class="nav-link <%= activePage === 'settings' ? 'active' : '' %>">Settings</a>
-                <!-- Add a new link for logout -->
+                
                 <a href="/logout" id="logoutButton">Logout</a>
                 <div class="user-profile">
                     <img src="<%= user.profileImage %>" alt="Profile" class="profile-image">
@@ -41,14 +41,14 @@
             <div class="sidebar-layout">
                 <aside class="sidebar">
                     <nav class="sidebar-nav">
-                        <a href="#" class="sidebar-link <%= activeSidebar === 'accountSetting' ? 'active' : '' %>">Account Setting</a>
+                        <a href="/settings/account" class="sidebar-link"  onclick="loadPanel('account')">Account Setting</a>
                         <a href="#" class="sidebar-link">Add new Alumini</a>
-                        <a href="/settings/addNewAdmin" class="sidebar-link">Add new Admin</a>
+                        <a href="/settings/addNewAdmin" class="sidebar-link" onclick="loadPanel('addAdmin')">Add new Admin</a>
                     </nav>
                 </aside>
 
                 <section class="content">
-                    <h2 class="content-title">Account Settings</h2>
+                    <!-- <h2 class="content-title">Account Settings</h2>
                     
                     <form class="settings-form" method="POST" action="/updateProfile">
                         <div class="profile-upload">
@@ -91,10 +91,28 @@
                             <button type="submit" class="btn btn-primary">Update Profile</button>
                             <button type="button" class="btn btn-reset">Reset</button>
                         </div>
-                    </form>
+                    </form> -->
+                    <div id="settingsContent">
+                        <% if (panel === 'account') { %>
+                            <% include ./partials/accountSettings %>
+                        <% } else if (panel === 'addAdmin') { %>
+                            <% include ./partials/addAdmin %>
+                        <% } %>
+                    </div>
                 </section>
+               
             </div>
         </div>
     </main>
 </body>
 </html>
+<script>
+    function loadPanel(panel) {
+    fetch(`/settings/${panel}`)
+        .then((response) => response.text())
+        .then((html) => {
+            document.getElementById('settingsContent').innerHTML = html;
+        })
+        .catch((err) => console.error('Error loading panel:', err));
+}
+</script>
