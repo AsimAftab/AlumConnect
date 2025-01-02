@@ -2,11 +2,14 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
+const fs = require('fs');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+
 const settingsRoutes = require('./routes/settingsRoutes');  
+const recordRoutes=  require('./routes/recordRoutes');
 dotenv.config();
 
 const app = express();
@@ -25,6 +28,12 @@ app.use(session({
     },
 }));
 
+// Ensure the 'uploads' directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+    console.log('Uploads directory created.');
+}
 // Middleware for logging requests
 app.use(morgan('dev'));
 
@@ -49,6 +58,7 @@ app.get('/', (req, res) => {
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(settingsRoutes);
+app.use(recordRoutes);
 
 
 
