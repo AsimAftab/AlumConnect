@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
-const fs = require('fs');
+// const fs = require('fs');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -29,12 +29,12 @@ app.use(session({
 }));
 
 // Ensure the 'uploads' directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-    console.log('Uploads directory created.');
-}
-// Middleware for logging requests
+// const uploadsDir = path.join(__dirname, 'uploads');
+// if (!fs.existsSync(uploadsDir)) {
+//     fs.mkdirSync(uploadsDir);
+//     console.log('Uploads directory created.');
+// }
+// // Middleware for logging requests
 app.use(morgan('dev'));
 
 // Middleware to parse request bodies

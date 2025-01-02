@@ -3,38 +3,46 @@ const Record = require('../models/recordModels');
 const moment = require('moment-timezone');
 
 class RecordService {
-    // Process and save Excel data
-    async processExcelFile(filePath) {
+    /**
+     * Process Excel data from a buffer.
+     * @param {Buffer} buffer - The buffer of the Excel file.
+     * @returns {Array} Array of transformed records.
+     */
+    async processExcelBuffer(buffer) {
         try {
-            // Read the Excel file
-            const workbook = xlsx.readFile(filePath);
+            // Read workbook from buffer
+            const workbook = xlsx.read(buffer, { type: 'buffer' });
             const sheetName = workbook.SheetNames[0];
             const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-            // Transform data to match your schema
-            const records = data.map(record => {
-                return {
-                    name: record.Name || record.name,
-                    company: record.Company || record.company,
-                    // Ensure dateUpdated is formatted as 'YYYY-MM-DD' with the specific timezone
-                    dateUpdated: moment(record.DateUpdated || record.dateUpdated || Date.now())
-                        .tz("Asia/Kolkata") // Use your desired timezone here
-                        .format("YYYY-MM-DD"), // Format it as 'YYYY-MM-DD'
-                    batch: record.Batch || record.batch,
-                    status: record.Status || record.status,
-                    requestUpdate: record.RequestUpdate === 'true' || false,
-                    slNo: record.slNo, // Provide a default value if slNo is missing
-                };
-            });
+            // Transform data to match schema
+            const records = data.map(record => ({
+                name: record.Name || record.name || 'Unknown', // Default value if missing
+                company: record.Company || record.company || 'N/A',
+                dateUpdated: moment(record.DateUpdated || record.dateUpdated || Date.now())
+                    .tz('Asia/Kolkata')
+                    .format('YYYY-MM-DD'),
+                batch: record.Batch || record.batch || 'Unknown',
+                status: (record.Status || record.status || 'Unknown')
+                .trim()
+                .toLowerCase()
+                .replace(/\b\w/g, char => char.toUpperCase()),
+                requestUpdate: record.RequestUpdate === 'true' || record.RequestUpdate === true || false,
+                slNo: record.slNo || 'N/A', // Default if slNo is missing
+            }));
 
-            return records; // Return transformed records for saving
+            return records;
         } catch (error) {
-            console.error('Error processing Excel file:', error);
-            throw error;
+            console.error('Error processing Excel buffer:', error);
+            throw new Error('Failed to process Excel file');
         }
     }
 
-    // Save records to the database
+    /**
+     * Save multiple records to the database.
+     * @param {Array} records - Array of records to save.
+     * @returns {Promise} Promise resolving with saved records.
+     */
     async saveRecords(records) {
         try {
             if (records.length > 0) {
@@ -48,7 +56,11 @@ class RecordService {
         }
     }
 
-    // Get all records with optional filtering
+    /**
+     * Retrieve all records with optional filters.
+     * @param {Object} filters - MongoDB query filters.
+     * @returns {Promise} Promise resolving with the records.
+     */
     async getAllRecords(filters = {}) {
         try {
             return await Record.find(filters).sort({ dateUpdated: -1 });
@@ -58,7 +70,10 @@ class RecordService {
         }
     }
 
-    // Get dashboard statistics
+    /**
+     * Get dashboard statistics.
+     * @returns {Object} Object containing dashboard statistics.
+     */
     async getDashboardStats() {
         try {
             const records = await this.getAllRecords();
@@ -75,7 +90,12 @@ class RecordService {
         }
     }
 
-    // Update a specific record
+    /**
+     * Update a specific record.
+     * @param {String} id - ID of the record to update.
+     * @param {Object} data - Data to update.
+     * @returns {Promise} Promise resolving with the updated record.
+     */
     async updateRecord(id, data) {
         try {
             return await Record.findByIdAndUpdate(id, data, { new: true });
@@ -85,7 +105,11 @@ class RecordService {
         }
     }
 
-    // Delete a specific record
+    /**
+     * Delete a specific record.
+     * @param {String} id - ID of the record to delete.
+     * @returns {Promise} Promise resolving with the deleted record.
+     */
     async deleteRecord(id) {
         try {
             return await Record.findByIdAndDelete(id);
