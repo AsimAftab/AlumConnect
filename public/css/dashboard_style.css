@@ -161,9 +161,9 @@ nav a:hover {
 .search-upload-row h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #15B5B0;
-    font-weight: bold;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: #2D788D;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .search-upload {
@@ -183,10 +183,10 @@ nav a:hover {
 
 .search-upload button {
     padding: 12px 25px;
-    background-color: #15B5B0;
+    background-color: #2B6373;
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 50px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -223,7 +223,7 @@ table th {
 }
 
 table td {
-    color: #2D788D;
+    color: #3394A7;
     text-align: left;
     padding: 15px 25px;
     border-bottom: 1px solid #e1e8ed;
@@ -285,18 +285,18 @@ table td:nth-child(7) {
     margin: 0 5px;
     padding: 10px 15px;
     text-decoration: none;
-    color: #0078d4;
+    color: #3394A7;
     border: 1px solid #e1e8ed;
     border-radius: 4px;
 }
 
 .pagination a:hover {
-    background-color: #0078d4;
+    background-color: #3394A7;
     color: white;
 }
 
 .pagination a.active {
-    background-color: #0078d4;
+    background-color: #3394A7;
     color: white;
 }
 
@@ -408,7 +408,7 @@ nav a:hover::after {
 /* Enhanced Upload CSV button hover effects */
 .search-upload button {
     padding: 12px 25px;
-    background-color: #15B5B0;
+    background-color: #2B6373;
     color: white;
     border: none;
     border-radius: 30px;
@@ -421,7 +421,7 @@ nav a:hover::after {
 .search-upload button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(21, 181, 176, 0.3);
-    background-color: #13a29e;
+    background-color: #2B6373;
 }
 
 .search-upload button:active {
@@ -439,19 +439,11 @@ nav a:hover::after {
 }
 
 .search-upload input[type="text"]:hover {
-    border-color: #15B5B0;
+    border-color: #2B6373;
 }
 
 .search-upload input[type="text"]:focus {
     outline: none;
-    border-color: #15B5B0;
+    border-color: #2B6373;
     box-shadow: 0 0 0 3px rgba(21, 181, 176, 0.1);
-}
-
-.no-data {
-    text-align: center;
-    color: #888;
-    font-size: 16px;
-    padding: 20px;
-    font-style: italic;
 }
