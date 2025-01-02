@@ -23,7 +23,10 @@ class RecordService {
                     .tz('Asia/Kolkata')
                     .format('YYYY-MM-DD'),
                 batch: record.Batch || record.batch || 'Unknown',
-                status: record.Status || record.status || 'Unknown',
+                status: (record.Status || record.status || 'Unknown')
+                .trim()
+                .toLowerCase()
+                .replace(/\b\w/g, char => char.toUpperCase()),
                 requestUpdate: record.RequestUpdate === 'true' || record.RequestUpdate === true || false,
                 slNo: record.slNo || 'N/A', // Default if slNo is missing
             }));
