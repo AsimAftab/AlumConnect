@@ -1,5 +1,4 @@
-const bcrypt = require('bcryptjs');
-const adminModels = require('../models/adminModels'); // Import your admin model
+const adminModels = require('../models/adminModels');
 
 exports.addNewAdmin = async (req, res) => {
   try {
@@ -11,19 +10,11 @@ exports.addNewAdmin = async (req, res) => {
       return res.status(400).json({ error: 'Admin already exists' });
     }
 
-
-    // Create a new admin object with hashed password
-    const newAdmin = new adminModels({
-      name,
-      email,
-      password,
-    });
-
-    // Save the new admin to the database
+    // Create and save a new admin (password hashing is handled in the model)
+    const newAdmin = new adminModels({ name, email, password });
     await newAdmin.save();
 
-    // Send a success response
-    res.status(201).json({ message: 'Admin created successfully', admin: newAdmin });
+    return res.status(201).json({ message: 'Admin created successfully' });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Server error' });

@@ -58,7 +58,7 @@ app.get("/", (req, res) => {
 
 app.use(authRoutes);
 app.use(dashboardRoutes);
-app.use(settingsRoutes);
+app.use('/settings', settingsRoutes);
 app.use(recordRoutes);
 
 // // Error handling middleware
