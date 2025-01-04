@@ -63,22 +63,30 @@
             <div class="stat-card">
                 <h2>No of Alumni</h2>
 
-                <p><%= alumniCount %></p> <!-- Dynamic value passed from the backend -->
+                <p>
+                    <%= alumniCount %>
+                </p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Higher<br>Studies</h2>
-                <p><%= higherStudiesCount %></p> <!-- Dynamic value passed from the backend -->
+                <p>
+                    <%= higherStudiesCount %>
+                </p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of Placed</h2>
-                <p><%= placedCount %></p>  <!-- Dynamic value passed from the backend -->
+                <p>
+                    <%= placedCount %>
+                </p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
             </div>
             <div class="stat-card">
                 <h2>No of<br>Entrepreneur</h2>
-                <p><%= entrepreneurCount %></p> <!-- Dynamic value passed from the backend -->
+                <p>
+                    <%= entrepreneurCount %>
+                </p> <!-- Dynamic value passed from the backend -->
                 <img src="/icons/profileIcon.svg" alt="Logo" class="stat-logo">
 
             </div>
@@ -89,7 +97,11 @@
             <div class="search-upload">
                 <input type="text" placeholder="Search" id="search-input">
                 <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="file" accept=".xlsx, .xls" required>
+                    <div class="custom-file">
+                        <label for="file" class="custom-file-label">Choose File</label>
+                        <input type="file" id="file" name="file" accept=".xlsx, .xls" required hidden>
+                    </div>
+
                     <button type="submit">Upload Excel</button>
                 </form>
             </div>
@@ -97,53 +109,71 @@
 
         <div class="table-container">
             <table id="user-table">
-                <thead>
-                    <tr>
-                        <th>Sl.No</th>
-                        <th>Name</th>
-                        <th>Company</th>
-                        <th>Date Updated</th>
-                        <th>Batch</th>
-                        <th>Status</th>
-                        <th>Request Update</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (users && users.length> 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sl.No</th>
+                            <th>Name</th>
+                            <th>Company</th>
+                            <th>USN</th> <!-- New USN column -->
+                            <th>Date Updated</th>
+                            <th>Batch</th>
+                            <th>Status</th>
+                            <th>Request Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <% users.forEach((user, index)=> { %>
                             <tr>
                                 <td>
                                     <%= index + 1 %>
                                 </td>
                                 <td>
-                                    <%= user.name || 'N/A' %>
+                                    <%= user.name %>
                                 </td>
                                 <td>
-                                    <%= user.company || 'N/A' %>
+                                    <%= user.company %>
                                 </td>
                                 <td>
-                                    <%= user.dateUpdated || 'N/A' %>
+                                    <%= user.usn %>
+                                </td> <!-- Render USN -->
+                                <td>
+                                    <%= user.dateUpdated %>
                                 </td>
                                 <td>
-                                    <%= user.batch || 'N/A' %>
+                                    <%= user.batch %>
                                 </td>
                                 <td>
-                                    <%= user.status || 'N/A' %>
+                                    <%= user.status %>
                                 </td>
-                                <td><a href="/update-request/<%= user._id %>">Request Update</a></td>
+                                <td><a href="/update/<%= user.id %>">Request Update</a></td>
                             </tr>
                             <% }); %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="7" class="no-data">No data available</td>
-                                    </tr>
-                                    <% } %>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    </tbody>
 
-    <script src="/js/dashboard.js"></script>
+
+                </table>
+
+                <!-- Pagination Controls -->
+                <div class="pagination">
+                    <% if (currentPage> 1) { %>
+                        <a href="/dashboard?page=<%= currentPage - 1 %>" class="prev">Previous</a>
+                        <% } %>
+
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <a href="/dashboard?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+
+                                    <% if (currentPage < totalPages) { %>
+                                        <a href="/dashboard?page=<%= currentPage + 1 %>" class="next">Next</a>
+                                        <% } %>
+                </div>
+        </div>
+
+
+        <script src="/js/dashboard.js"></script>
 
 </body>
 

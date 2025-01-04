@@ -19,14 +19,15 @@ class RecordService {
             const records = data.map(record => ({
                 name: record.Name || record.name || 'Unknown', // Default value if missing
                 company: record.Company || record.company || 'N/A',
+                usn: record.Usn || record.usn || 'Unknown',
                 dateUpdated: moment(record.DateUpdated || record.dateUpdated || Date.now())
                     .tz('Asia/Kolkata')
                     .format('YYYY-MM-DD'),
                 batch: record.Batch || record.batch || 'Unknown',
                 status: (record.Status || record.status || 'Unknown')
-                .trim()
-                .toLowerCase()
-                .replace(/\b\w/g, char => char.toUpperCase()),
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\b\w/g, char => char.toUpperCase()),
                 requestUpdate: record.RequestUpdate === 'true' || record.RequestUpdate === true || false,
                 slNo: record.slNo || 'N/A', // Default if slNo is missing
             }));
@@ -66,6 +67,29 @@ class RecordService {
             return await Record.find(filters).sort({ dateUpdated: -1 });
         } catch (error) {
             console.error('Error fetching records:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieve paginated records.
+     * @param {Number} page - Current page number.
+     * @param {Number} limit - Number of records per page.
+     * @param {Object} filters - MongoDB query filters.
+     * @returns {Object} Object containing paginated records and total record count.
+     */
+    async getPaginatedRecords(page = 1, limit = 5, filters = {}) {
+        try {
+            const skip = (page - 1) * limit;
+            const records = await Record.find(filters)
+                .skip(skip)
+                .limit(limit)
+                .sort({ dateUpdated: -1 });
+            const totalRecords = await Record.countDocuments(filters);
+
+            return { records, totalRecords };
+        } catch (error) {
+            console.error('Error fetching paginated records:', error);
             throw error;
         }
     }

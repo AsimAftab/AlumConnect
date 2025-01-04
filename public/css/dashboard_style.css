@@ -12,46 +12,64 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
+    padding: 8px 15px;
     background: linear-gradient(to right, #ffffff, #f8fafc);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
+
 /* Download Report Button */
 .download-report-container {
     display: flex;
-    justify-content: flex-start;  /* Aligns button to the left */
+    justify-content: flex-start;
+    /* Aligns button to the left */
     align-items: center;
     margin: 20px 0;
 }
+
 .download-report-container {
     display: flex;
-    justify-content: flex-start;  /* Aligns button to the left */
+    justify-content: flex-start;
+    /* Aligns button to the left */
     align-items: center;
     margin: 20px 0;
 }
 
 .download-report-button {
-    color: #2D788D; /* Text color */
-    font-size: 16px; /* Font size */
-    padding: 10px 20px; /* Padding */
-    font-weight: 600; /* Bold text */
-    border: 2px solid #2D788D; /* Outline same as text color */
-    border-radius: 50px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    background-color: transparent; /* Transparent background */
-    transition: all 0.3s ease; /* Smooth transitions */
-    outline: none; /* Removes default outline */
+    color: #2D788D;
+    /* Text color */
+    font-size: 16px;
+    /* Font size */
+    padding: 10px 20px;
+    /* Padding */
+    font-weight: 600;
+    /* Bold text */
+    border: 2px solid #2D788D;
+    /* Outline same as text color */
+    border-radius: 50px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    background-color: transparent;
+    /* Transparent background */
+    transition: all 0.3s ease;
+    /* Smooth transitions */
+    outline: none;
+    /* Removes default outline */
 }
 
 .download-report-button:hover {
-    background-color: rgba(45, 120, 141, 0.1); /* Subtle background on hover */
-    transform: translateY(-2px); /* Slight lift on hover */
+    background-color: rgba(45, 120, 141, 0.1);
+    /* Subtle background on hover */
+    transform: translateY(-2px);
+    /* Slight lift on hover */
 }
 
 .download-report-button:active {
-    background-color: rgba(45, 120, 141, 0.15); /* Darker background on click */
-    transform: translateY(0); /* Reset lift */
+    background-color: rgba(45, 120, 141, 0.15);
+    /* Darker background on click */
+    transform: translateY(0);
+    /* Reset lift */
 }
 
 /* Navigation and profile container */
@@ -110,8 +128,10 @@ nav a:hover {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Changed to center */
-    align-items: center; /* Changed to center */
+    justify-content: flex-start;
+    /* Changed to center */
+    align-items: center;
+    /* Changed to center */
     min-height: 180px;
     align-items: start;
     padding-right: 120px;
@@ -136,19 +156,23 @@ nav a:hover {
     text-align: center;
     width: 100%;
 }
+
 .stat-logo {
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
     width: 80px;
-    height: 80px; /* Made height equal to width for consistency */
+    height: 80px;
+    /* Made height equal to width for consistency */
     object-fit: contain;
     flex-shrink: 0;
     min-width: 80px;
     min-height: 80px;
-    padding: 10px; /* Added padding for icon */
+    padding: 10px;
+    /* Added padding for icon */
 }
+
 /* Search and Upload section */
 .search-upload-row {
     display: flex;
@@ -161,9 +185,9 @@ nav a:hover {
 .search-upload-row h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #2D788D;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
+    color: #15B5B0;
+    font-weight: bold;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 .search-upload {
@@ -183,10 +207,10 @@ nav a:hover {
 
 .search-upload button {
     padding: 12px 25px;
-    background-color: #2B6373;
+    background-color: #15B5B0;
     color: white;
     border: none;
-    border-radius: 50px;
+    border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -198,10 +222,10 @@ nav a:hover {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 10px;
+    margin-bottom: 10px;
     min-height: calc(100vh - 450px);
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 /* Table layout */
@@ -217,15 +241,15 @@ table th {
     color: #3394A7;
     font-weight: bold;
     text-align: left;
-    padding: 15px 25px;
+    padding: 8px 10px;
     border-bottom: 1px solid #e1e8ed;
     white-space: nowrap;
 }
 
 table td {
-    color: #3394A7;
+    color: #2D788D;
     text-align: left;
-    padding: 15px 25px;
+    padding: 8px 10px;
     border-bottom: 1px solid #e1e8ed;
     white-space: nowrap;
 }
@@ -233,25 +257,25 @@ table td {
 /* Specific column widths */
 table th:nth-child(1),
 table td:nth-child(1) {
-    width: 8%;
+    width: 6%;
     /* Sl. No */
 }
 
 table th:nth-child(2),
 table td:nth-child(2) {
-    width: 20%;
+    width: 13%;
     /* Name */
 }
 
 table th:nth-child(3),
 table td:nth-child(3) {
-    width: 20%;
+    width: 15%;
     /* Company */
 }
 
 table th:nth-child(4),
 table td:nth-child(4) {
-    width: 20%;
+    width: 10%;
     /* Date Updated */
 }
 
@@ -269,7 +293,7 @@ table td:nth-child(6) {
 
 table th:nth-child(7),
 table td:nth-child(7) {
-    width: 10%;
+    width: 12%;
     /* Request Update */
 }
 
@@ -285,18 +309,18 @@ table td:nth-child(7) {
     margin: 0 5px;
     padding: 10px 15px;
     text-decoration: none;
-    color: #3394A7;
+    color: #0078d4;
     border: 1px solid #e1e8ed;
     border-radius: 4px;
 }
 
 .pagination a:hover {
-    background-color: #3394A7;
+    background-color: #0078d4;
     color: white;
 }
 
 .pagination a.active {
-    background-color: #3394A7;
+    background-color: #0078d4;
     color: white;
 }
 
@@ -408,7 +432,7 @@ nav a:hover::after {
 /* Enhanced Upload CSV button hover effects */
 .search-upload button {
     padding: 12px 25px;
-    background-color: #2B6373;
+    background-color: #15B5B0;
     color: white;
     border: none;
     border-radius: 30px;
@@ -421,7 +445,7 @@ nav a:hover::after {
 .search-upload button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(21, 181, 176, 0.3);
-    background-color: #2B6373;
+    background-color: #13a29e;
 }
 
 .search-upload button:active {
@@ -439,11 +463,91 @@ nav a:hover::after {
 }
 
 .search-upload input[type="text"]:hover {
-    border-color: #2B6373;
+    border-color: #15B5B0;
 }
 
 .search-upload input[type="text"]:focus {
     outline: none;
-    border-color: #2B6373;
+    border-color: #15B5B0;
     box-shadow: 0 0 0 3px rgba(21, 181, 176, 0.1);
+}
+
+.no-data {
+    text-align: center;
+    color: #888;
+    font-size: 16px;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Styling for class : file input (file choose) */
+.custom-file {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-file-label {
+    background-color: #2D788D;
+    /* Primary color */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    /* Rounded button */
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-file-label:hover {
+    background-color: #245f6f;
+    /* Slightly darker shade for hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-label:active {
+    background-color: #1a4551;
+    /* Even darker shade for active */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.custom-file input[type="file"] {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination a {
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #3394A7;
+    font-weight: bold;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination a:hover {
+    background-color: #15B5B0;
+    color: #fff;
+}
+
+.pagination a.active {
+    background-color: #7adad7;
+    color: #fff;
+    cursor: default;
 }
