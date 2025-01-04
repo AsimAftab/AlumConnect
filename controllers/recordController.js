@@ -25,7 +25,7 @@ exports.uploadExcel = async (req, res) => {
                 const duplicateKeyError = error.message.match(/dup key: { : (\d+) }/);
                 const duplicateSlNo = duplicateKeyError ? duplicateKeyError[1] : 'Unknown';
 
-                console.error('Duplicate entry found for slNo:', duplicateSlNo);
+                console.error('Duplicate entry found for slNo: Ayush wait here', duplicateSlNo);
                 return res.status(400).json({
                     success: false,
                     error: `Duplicate entry found for slNo: ${duplicateSlNo}`,
@@ -61,24 +61,36 @@ exports.uploadExcel = async (req, res) => {
 
 
 // Render the dashboard page with statistics
+// Render the dashboard page with statistics
 exports.getDashboard = async (req, res) => {
     try {
-        const users = await recordService.getAllRecords();
+        // Extract pagination parameters
+        const page = parseInt(req.query.page, 10) || 1; // Default to page 1
+        const limit = 5; // Set default limit to 5 records per page
+
+        // Fetch paginated records and stats
+        const { records: users, totalRecords } = await recordService.getPaginatedRecords(page, limit);
         const stats = await recordService.getDashboardStats();
 
+        const totalPages = Math.ceil(totalRecords / limit); // Calculate total pages
+
+        // Render the dashboard with all necessary variables
         res.render('dashboard', {
             users: users,
             isNoData: users.length === 0,
             alumniCount: stats.alumniCount || 0,
             higherStudiesCount: stats.higherStudiesCount || 0,
             placedCount: stats.placedCount || 0,
-            entrepreneurCount: stats.entrepreneurCount || 0
+            entrepreneurCount: stats.entrepreneurCount || 0,
+            currentPage: page, // Pass current page
+            totalPages: totalPages, // Pass total pages
         });
     } catch (error) {
         console.error('Dashboard error:', error);
         res.status(500).render('error', { message: 'Error loading dashboard', error: error });
     }
 };
+
 
 // Fetch all records as JSON
 exports.getRecords = async (req, res) => {
