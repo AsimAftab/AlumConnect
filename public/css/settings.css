@@ -408,17 +408,37 @@ select#status {
     font-size: 14px;
   }
   
-  .message.success {
+  #message.success {
     background-color: #d1e7dd; /* Light green */
     color: #0f5132; /* Dark green */
     border: 1px solid #badbcc;
   }
   
-  .message.error {
+  #message.error {
     background-color: #f8d7da; /* Light red */
     color: #842029; /* Dark red */
     border: 1px solid
   }
+
+  #messageAlumini {
+    margin-top: 20px;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  #messageAlumini.success {
+    background-color: #d1e7dd; /* Light green */
+    color: #0f5132; /* Dark green */
+    border: 1px solid #badbcc;
+  }
+  
+  #messageAlumini.error {
+    background-color: #f8d7da; /* Light red */
+    color: #842029; /* Dark red */
+    border: 1px solid
+  }
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     .sidebar-layout {

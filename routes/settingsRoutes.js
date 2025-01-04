@@ -1,7 +1,7 @@
 
 const express = require("express");
 const addAdminController = require("../controllers/addAdminController");
-// const addNewAluminiController= require("../controllers/addNewAlumniController")
+const addNewAluminiController= require("../controllers/addNewAluminiController")
 const router = express.Router();
 const isAuthenticated = require("../middleware/authMiddleware");
 
@@ -33,5 +33,5 @@ router.get("/addNewAdmin", isAuthenticated, (req, res) => {
 
 // Handle the POST request for adding new admin
 router.post("/addNewAdmin", addAdminController.addNewAdmin);
-// router.post("/addNewAlumini",addNewAluminiController.addNewAlumni);
+router.post("/addNewAlumini",addNewAluminiController.addNewAlumni);
 module.exports = router;
