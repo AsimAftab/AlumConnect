@@ -1,40 +1,56 @@
-document.getElementById('adminForm').addEventListener('submit', async function (event) {
-    event.preventDefault(); // Prevent default form submission
-  
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-  
-    const formData = {
-      name: name,
-      email: email,
-      password: password
-    };
-  
-    try {
-      // Send the form data to the server using the fetch API
-      const response = await fetch('/settings/addNewAdmin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Indicate the content type as JSON
-        },
-        body: JSON.stringify(formData) // Convert the form data to JSON
-      });
-  
-      // Handle the response from the server
-      const data = await response.json();
-  
-      if (response.ok) {
-        // Success message
-        document.getElementById('message').innerText = 'Admin added successfully!';
-        document.getElementById('adminForm').reset(); // Reset the form after successful submission
-      } else {
-        // Display error message
-        document.getElementById('message').innerText = 'Error: ' + data.message;
+document.addEventListener('DOMContentLoaded', function () {
+  const adminForm = document.getElementById('adminForm');
+  const messageElement = document.getElementById('message'); // Reference to the message container
+
+  if (adminForm) {
+    adminForm.addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const submitButton = this.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Adding...';
+
+      // Clear any previous messages
+      messageElement.textContent = '';
+      messageElement.className = '';
+
+      try {
+        const formData = {
+          name: document.getElementById('name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        };
+
+        const response = await fetch('/settings/addNewAdmin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Success message
+          messageElement.textContent = data.message || 'Admin added successfully!';
+          messageElement.className = 'message success';
+
+          // Clear the form
+          adminForm.reset();
+        } else {
+          // Error message
+          messageElement.textContent = data.error || 'Failed to add admin';
+          messageElement.className = 'message error';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        messageElement.textContent = 'Network error occurred';
+        messageElement.className = 'message error';
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add Admin';
       }
-    } catch (error) {
-      // Handle any network or other errors
-      document.getElementById('message').innerText = 'Network Error: ' + error.message;
-    }
-  });
-  
+    });
+  }
+});

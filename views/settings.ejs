@@ -41,26 +41,37 @@
         </div>
     </header>
 
+   
     <main class="main">
         <div class="container">
             <h1 class="page-title">Settings</h1>
-
+            
             <div class="sidebar-layout">
                 <aside class="sidebar">
                     <nav class="sidebar-nav">
-                        <a href="/settings?sidebar=accountSettings" class="sidebar-link"
-                            class="<%= activeSidebar === 'accountSettings' ? 'active' : '' %>">Account Setting</a>
-                        <a href="#" class="sidebar-link">Add new Alumini</a>
-                        <a href="/settings?sidebar=addNewAdmin" class="sidebar-link"
-                            class="<%= activeSidebar === 'addNewAdmin' ? 'active' : '' %>"" >Add new Admin</a>
+                        <a href="/settings?sidebar=accountSettings" 
+                           class="sidebar-link <%= activeSidebar === 'accountSettings' ? 'active' : '' %>">
+                           Account Setting
+                        </a>
+                        <a href="/settings?sidebar=addNewAlumni" 
+                           class="sidebar-link <%= activeSidebar === 'addNewAlumni' ? 'active' : '' %>">
+                           Add new Alumni
+                        </a>
+                        <a href="/settings?sidebar=addNewAdmin" 
+                        class="sidebar-link <%= activeSidebar === 'addNewAdmin' ? 'active' : '' %>">
+                        Add new Admin
+                        </a>
                     </nav>
                 </aside>
-                <section class=" content">
-                    <%- include('partials/' + activeSidebar) %>
+                
+                <section class="content">
+                    <%- include(`./partials/${activeSidebar}`) %>
                 </section>
             </div>
         </div>
     </main>
-</body>
 
+    <!-- Add form handling script -->
+    <script src="/js/addNewAdmin"></script>
+</body>
 </html>
