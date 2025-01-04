@@ -356,6 +356,32 @@ line-height: 40px;
     color: #111827;
 }
 
+/* styles for dropdown menu */
+select#status option {
+    background-color: #f8f9fa; 
+    color: #333; 
+    padding: 10px; 
+    font-size: 16px; 
+}
+
+select#status option:enabled {
+    background-color: white; 
+    color: #2B6D98; 
+    padding: 10px; 
+    font-size: 16px; 
+}
+
+select#status {
+    width: 100%; 
+    padding: 10px; 
+    font-size: 16px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    background-color: #fff; 
+    color: #333; 
+}
+
+
 /* Add these styles to your settings.css */
 
 #message {
