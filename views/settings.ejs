@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Settings - AlumConnect</title>
     <link rel="stylesheet" href="css/settings.css">
 </head>
+
 <body>
     <header class="header">
         <div class="container header-content">
@@ -15,17 +17,22 @@
             </div>
             <nav class="nav">
                 <a href="/dashboard" class="nav-link">Dashboard</a>
-                <a href="/settings" class="nav-link <%= activePage === 'settings' ? 'active' : '' %>">Settings</a>
+                <a href="/settings" class="nav-link">Settings</a>
                 <!-- Add a new link for logout -->
                 <a href="/logout" id="logoutButton">Logout</a>
                 <div class="user-profile">
-                    <img src="<%= user.profileImage %>" alt="Profile" class="profile-image">
+                    <img src=`<%=user.profileImage %>` alt="Profile" class="profile-image">
                     <div class="user-info">
-                        <span class="user-name"><%= user.name %></span>
-                        <span class="user-role"><%= user.role %></span>
+                        <span class="user-name">
+                            <%= user.name %>
+                        </span>
+                        <span class="user-role">
+                            <%= user.role %>
+                        </span>
                     </div>
                     <button class="dropdown-button">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
@@ -37,64 +44,23 @@
     <main class="main">
         <div class="container">
             <h1 class="page-title">Settings</h1>
-            
+
             <div class="sidebar-layout">
                 <aside class="sidebar">
                     <nav class="sidebar-nav">
-                        <a href="#" class="sidebar-link <%= activeSidebar === 'accountSetting' ? 'active' : '' %>">Account Setting</a>
+                        <a href="/settings?sidebar=accountSettings" class="sidebar-link"
+                            class="<%= activeSidebar === 'accountSettings' ? 'active' : '' %>">Account Setting</a>
                         <a href="#" class="sidebar-link">Add new Alumini</a>
-                        <a href="/settings/addNewAdmin" class="sidebar-link">Add new Admin</a>
+                        <a href="/settings?sidebar=addNewAdmin" class="sidebar-link"
+                            class="<%= activeSidebar === 'addNewAdmin' ? 'active' : '' %>"" >Add new Admin</a>
                     </nav>
                 </aside>
-
-                <section class="content">
-                    <h2 class="content-title">Account Settings</h2>
-                    
-                    <form class="settings-form" method="POST" action="/updateProfile">
-                        <div class="profile-upload">
-                            <p class="upload-label">Your Profile Picture</p>
-                            <div class="upload-container">
-                                <label for="fileUpload" class="upload-box">
-                                  <img src="images/upload.svg" alt="Upload Icon" class="upload-icon">
-                                  <p>Upload your photo</p>
-                                  <input type="file" id="fileUpload" accept="image/*" />
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="fullname">Full name</label>
-                                <input type="text" id="fullname" name="fullname" value="<%= user.fullname %>" placeholder="Please enter your full name">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" value="<%= user.email %>" placeholder="Please enter your email">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="password">New Password</label>
-                                <input type="password" id="password" name="password" placeholder="Please enter your new password">
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Phone number</label>
-                                <div class="phone-input">
-                                    <span class="country-code">+91</span>
-                                    <input type="tel" id="phone" name="phone" value="<%= user.phone %>" placeholder="Please enter your phone number">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Update Profile</button>
-                            <button type="button" class="btn btn-reset">Reset</button>
-                        </div>
-                    </form>
+                <section class=" content">
+                    <%- include('partials/' + activeSidebar) %>
                 </section>
             </div>
         </div>
     </main>
 </body>
+
 </html>
