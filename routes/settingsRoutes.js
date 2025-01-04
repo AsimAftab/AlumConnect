@@ -9,7 +9,6 @@ router.get("/", isAuthenticated, (req, res) => {
     const user = {
         name: "Rheya",
         role: "Admin",
-        profileImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop&crop=faces",
         fullname: "Rheya Kumar",
         email: "rheya@example.com",
         phone: "9876543210",

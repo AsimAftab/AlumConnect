@@ -79,20 +79,6 @@ header {
     gap: 20px;
 }
 
-/* Navigation styles */
-nav a {
-    padding: 8px 16px;
-    text-decoration: none;
-    color: #33475b;
-    font-size: 1rem;
-    border-radius: 4px;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-nav a:hover {
-    background-color: #f0f4f8;
-    color: #0078d4;
-}
 
 /* Profile picture */
 .profile-pic {
