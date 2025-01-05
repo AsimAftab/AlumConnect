@@ -2,17 +2,23 @@ const addAluminiModel = require("../models/recordModels");
 
 exports.addNewAlumni = async (req, res) => {
     try {
-        const { name, usn, company, batch, status } = req.body;
+        const { name, usn, company, batch, status, email } = req.body;
 
         // Validate if all required fields are provided
-        if (!name || !usn || !company || !batch || !status) {
-            return res.status(400).json({ error: 'Name, USN, Company, Batch, and Status are required fields' });
+        if (!name || !usn || !company || !batch || !status || !email) {
+            return res.status(400).json({ error: 'Name, USN, Company, Batch, Status, and Email are required fields' });
         }
 
         // Check if the alumni already exists
         const existingAlumni = await addAluminiModel.findOne({ usn });
         if (existingAlumni) {
             return res.status(400).json({ error: 'Alumni already exists with this USN' });
+        }
+
+        // Check for valid email format
+        const emailRegex = /^\S+@\S+\.\S+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format' });
         }
 
         // Find the smallest vacant slNo
@@ -34,6 +40,7 @@ exports.addNewAlumni = async (req, res) => {
             company,
             batch,
             status, // Added the status field
+            email,  // Added the email field
             slNo: vacantSlNo // Assign the next vacant serial number
         });
 

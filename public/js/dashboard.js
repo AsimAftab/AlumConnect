@@ -69,3 +69,56 @@ function downloadReport(){
         alert('Upload failed: ' + error.message);
     }
 });          
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const requestButtons = document.querySelectorAll('.request-update');
+
+    requestButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const usn = button.getAttribute('data-usn');
+
+            if (!usn) {
+                alert('USN is missing. Please try again.');
+                return;
+            }
+
+            // Change button text to "Sending..." and show spinner
+            button.innerHTML = 'Sending... <div class="spinner"></div>';
+            button.disabled = true; // Disable button to prevent multiple clicks
+
+            try {
+                const response = await fetch('/request-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ usn }), // Send the USN to the server
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Change text to "Sent Successfully"
+                    button.innerHTML = 'Sent Successfully';
+                } else {
+                    // Reset text on failure
+                    button.innerHTML = 'Request Update';
+                    alert(data.message || 'Failed to send update request.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Reset text on error
+                button.innerHTML = 'Request Update';
+                alert('An error occurred. Please try again.');
+            } finally {
+                // Enable button after the request is complete
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 2800);
+                // button.innerHTML = 'Request Update Again'; // Keep the success message for a short time before enabling again
+            }
+
+        });
+    });
+});

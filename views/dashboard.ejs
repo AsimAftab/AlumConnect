@@ -109,68 +109,59 @@
 
         <div class="table-container">
             <table id="user-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Sl.No</th>
-                            <th>Name</th>
-                            <th>Company</th>
-                            <th>USN</th> <!-- New USN column -->
-                            <th>Date Updated</th>
-                            <th>Batch</th>
-                            <th>Status</th>
-                            <th>Request Update</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% users.forEach((user, index)=> { %>
+                <thead>
+                    <tr>
+                        <th>Sl.No</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>USN</th> <!-- New USN column -->
+                        <th>Date Updated</th>
+                        <th>Batch</th>
+                        <th>Status</th>
+                        <th>Request Update</th> <!-- Added this header -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach((user, index) => { %>
                             <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= user.name %></td>
+                                <td><%= user.company %></td>
+                                <td><%= user.usn %></td> <!-- Render USN -->
+                                <td><%= user.dateUpdated %></td>
+                                <td><%= user.batch %></td>
+                                <td><%= user.status %></td>
                                 <td>
-                                    <%= index + 1 %>
+                                    <!-- Button must be inside its own <td> -->
+                                    <button class="request-update" data-usn="<%= user.usn %>">Request Update</button>
                                 </td>
-                                <td>
-                                    <%= user.name %>
-                                </td>
-                                <td>
-                                    <%= user.company %>
-                                </td>
-                                <td>
-                                    <%= user.usn %>
-                                </td> <!-- Render USN -->
-                                <td>
-                                    <%= user.dateUpdated %>
-                                </td>
-                                <td>
-                                    <%= user.batch %>
-                                </td>
-                                <td>
-                                    <%= user.status %>
-                                </td>
-                                <td><a href="/update/<%= user.id %>">Request Update</a></td>
                             </tr>
-                            <% }); %>
-                    </tbody>
-
-
-                </table>
-
-                <!-- Pagination Controls -->
-                <div class="pagination">
-                    <% if (currentPage> 1) { %>
-                        <a href="/dashboard?page=<%= currentPage - 1 %>" class="prev">Previous</a>
-                        <% } %>
-
-                            <% for (let i=1; i <=totalPages; i++) { %>
-                                <a href="/dashboard?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>">
-                                    <%= i %>
-                                </a>
-                                <% } %>
-
-                                    <% if (currentPage < totalPages) { %>
-                                        <a href="/dashboard?page=<%= currentPage + 1 %>" class="next">Next</a>
-                                        <% } %>
-                </div>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="8" class="no-data">No users found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        
+            <!-- Pagination Controls -->
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="/dashboard?page=<%= currentPage - 1 %>" class="prev">Previous</a>
+                <% } %>
+        
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="/dashboard?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+        
+                <% if (currentPage < totalPages) { %>
+                    <a href="/dashboard?page=<%= currentPage + 1 %>" class="next">Next</a>
+                <% } %>
+            </div>
         </div>
+        
 
 
         <script src="/js/dashboard.js"></script>
