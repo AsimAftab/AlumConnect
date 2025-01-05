@@ -20,6 +20,7 @@ const recordSchema = new mongoose.Schema({
     },
     batch: { type: Number, required: true },
     status: { type: String, required: false },
+    email: { type: String, required: true },
     requestUpdate: { type: String, default: "Request Update" }
 }, { collection: 'records', timestamps: true });
 

@@ -83,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Change button text to "Sending..." and show spinner
+            button.innerHTML = 'Sending... <div class="spinner"></div>';
+            button.disabled = true; // Disable button to prevent multiple clicks
+
             try {
                 const response = await fetch('/request-update', {
                     method: 'POST',
@@ -95,14 +99,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
 
                 if (data.success) {
-                    alert('Update request email sent successfully!');
+                    // Change text to "Sent Successfully"
+                    button.innerHTML = 'Sent Successfully';
                 } else {
+                    // Reset text on failure
+                    button.innerHTML = 'Request Update';
                     alert(data.message || 'Failed to send update request.');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                // Reset text on error
+                button.innerHTML = 'Request Update';
                 alert('An error occurred. Please try again.');
+            } finally {
+                // Enable button after the request is complete
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 2800);
+                // button.innerHTML = 'Request Update Again'; // Keep the success message for a short time before enabling again
             }
+
         });
     });
 });

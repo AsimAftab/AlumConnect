@@ -255,7 +255,7 @@ table td:nth-child(2) {
 
 table th:nth-child(3),
 table td:nth-child(3) {
-    width: 15%;
+    width: 10%;
     /* Company */
 }
 
@@ -466,19 +466,69 @@ nav a:hover::after {
     font-style: italic;
 }
 .request-update {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    /* Basic button styling */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    
+    /* Text styling */
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3394A7;
+    
+    /* Border and Background */
+    background-color: transparent;
+    border: 1px solid #3394A7;
+    border-radius: 20px;
+    
+    /* Interactive elements */
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    outline: none;
 }
 
+/* Hover state */
 .request-update:hover {
-    background-color: #0056b3;
+    background-color: rgba(51, 148, 167, 0.1);
+    transform: translateY(-2px);
 }
 
+/* Active state */
+.request-update:active {
+    background-color: rgba(51, 148, 167, 0.15);
+    transform: translateY(0);
+}
+
+/* Focus state */
+.request-update:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(51, 148, 167, 0.2);
+}
+
+/* Arrow icon */
+.request-update::after {
+    content: '>';
+    margin-left: 4px;
+    font-weight: bold;
+}
+
+/* Disabled state */
+.request-update:disabled {
+    color: #cccccc;
+    border-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Container styling (if needed) */
+.request-update-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 20px 0;
+}
 /* Styling for class : file input (file choose) */
 .custom-file {
     position: relative;

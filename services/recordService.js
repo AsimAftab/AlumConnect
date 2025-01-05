@@ -15,22 +15,29 @@ class RecordService {
             const sheetName = workbook.SheetNames[0];
             const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
+            // Get the highest existing slNo in the database
+            const highestSlNoRecord = await Record.findOne().sort({ slNo: -1 }).select('slNo');
+            let highestSlNo = highestSlNoRecord ? highestSlNoRecord.slNo : 0;
+
             // Transform data to match schema
-            const records = data.map(record => ({
-                name: record.Name || record.name || 'Unknown', // Default value if missing
-                company: record.Company || record.company || 'N/A',
-                usn: record.Usn || record.usn || 'Unknown',
-                dateUpdated: moment(record.DateUpdated || record.dateUpdated || Date.now())
-                    .tz('Asia/Kolkata')
-                    .format('YYYY-MM-DD'),
-                batch: record.Batch || record.batch || 'Unknown',
-                status: (record.Status || record.status || 'Unknown')
-                    .trim()
-                    .toLowerCase()
-                    .replace(/\b\w/g, char => char.toUpperCase()),
-                requestUpdate: record.RequestUpdate === 'true' || record.RequestUpdate === true || false,
-                slNo: record.slNo || 'N/A', // Default if slNo is missing
-            }));
+            const records = data.map(record => {
+                const slNo = record.slNo || ++highestSlNo; // Use provided slNo or assign the next available one
+                return {
+                    name: record.Name || record.name || 'Unknown', // Default value if missing
+                    company: record.Company || record.company || 'N/A',
+                    usn: record.Usn || record.usn || 'Unknown',
+                    dateUpdated: moment(record.DateUpdated || record.dateUpdated || Date.now())
+                        .tz('Asia/Kolkata')
+                        .format('YYYY-MM-DD'),
+                    batch: record.Batch || record.batch || 'Unknown',
+                    status: (record.Status || record.status || 'Unknown')
+                        .trim()
+                        .toLowerCase()
+                        .replace(/\b\w/g, char => char.toUpperCase()),
+                    requestUpdate: record.RequestUpdate === 'true' || record.RequestUpdate === true || false,
+                    slNo, // Assign the resolved slNo
+                };
+            });
 
             return records;
         } catch (error) {
@@ -47,7 +54,15 @@ class RecordService {
     async saveRecords(records) {
         try {
             if (records.length > 0) {
-                return await Record.insertMany(records);
+                for (const record of records) {
+                    // Use `upsert` to avoid duplicate entries
+                    await Record.updateOne(
+                        { slNo: record.slNo },
+                        { $set: record },
+                        { upsert: true }
+                    );
+                }
+                return records;
             } else {
                 throw new Error('No valid records to save.');
             }
@@ -57,11 +72,7 @@ class RecordService {
         }
     }
 
-    /**
-     * Retrieve all records with optional filters.
-     * @param {Object} filters - MongoDB query filters.
-     * @returns {Promise} Promise resolving with the records.
-     */
+    // Other methods remain unchanged
     async getAllRecords(filters = {}) {
         try {
             return await Record.find(filters).sort({ dateUpdated: -1 });
@@ -71,13 +82,6 @@ class RecordService {
         }
     }
 
-    /**
-     * Retrieve paginated records.
-     * @param {Number} page - Current page number.
-     * @param {Number} limit - Number of records per page.
-     * @param {Object} filters - MongoDB query filters.
-     * @returns {Object} Object containing paginated records and total record count.
-     */
     async getPaginatedRecords(page = 1, limit = 5, filters = {}) {
         try {
             const skip = (page - 1) * limit;
@@ -94,10 +98,6 @@ class RecordService {
         }
     }
 
-    /**
-     * Get dashboard statistics.
-     * @returns {Object} Object containing dashboard statistics.
-     */
     async getDashboardStats() {
         try {
             const records = await this.getAllRecords();
@@ -114,12 +114,6 @@ class RecordService {
         }
     }
 
-    /**
-     * Update a specific record.
-     * @param {String} id - ID of the record to update.
-     * @param {Object} data - Data to update.
-     * @returns {Promise} Promise resolving with the updated record.
-     */
     async updateRecord(id, data) {
         try {
             return await Record.findByIdAndUpdate(id, data, { new: true });
@@ -129,11 +123,6 @@ class RecordService {
         }
     }
 
-    /**
-     * Delete a specific record.
-     * @param {String} id - ID of the record to delete.
-     * @returns {Promise} Promise resolving with the deleted record.
-     */
     async deleteRecord(id) {
         try {
             return await Record.findByIdAndDelete(id);
