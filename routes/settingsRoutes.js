@@ -6,7 +6,7 @@ const router = express.Router();
 const isAuthenticated = require("../middleware/authMiddleware");
 
 
-router.get("/", isAuthenticated, (req, res) => {
+router.get("/", (req, res) => {
     const user = {
         name: "Rheya",
         role: "Admin",
