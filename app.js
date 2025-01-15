@@ -20,14 +20,14 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "12345",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       collectionName: "sessions",
     }),
     cookie: {
       httpOnly: true,
-      secure: 'true',
+      secure: true,
       sameSite: "strict",
       maxAge: 3600000,
     },
