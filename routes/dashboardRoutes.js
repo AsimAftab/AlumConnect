@@ -22,8 +22,8 @@ const isAuthenticated = require('../middleware/authMiddleware');
 //       entrepreneurCount: 3
 //     });
 // });
-router.get('/dashboard', isAuthenticated, recordController.getDashboard);
+router.get('/dashboard',  recordController.getDashboard);
 
-router.get('/dashboard/report/download',isAuthenticated, downloadReportController);
+router.get('/dashboard/report/download', downloadReportController);
 
 module.exports = router;
