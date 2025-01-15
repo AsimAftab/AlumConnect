@@ -26,6 +26,7 @@ exports.postLogin = async (req, res) => {
             // Store user information in the session
             req.session.adminId = admin._id;
             req.session.email = admin.email;
+            console.log(req.session);
 
             // Redirect to the dashboard or another protected route
             return res.redirect('/dashboard');
